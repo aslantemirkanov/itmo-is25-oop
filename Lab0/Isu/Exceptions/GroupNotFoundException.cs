@@ -5,7 +5,7 @@ namespace Isu.Exceptions;
 public class GroupNotFoundException : IsuException
 {
     public GroupNotFoundException(GroupName groupName)
-        : base($"Group {groupName.GetGroupName()} doesn't exist")
+        : base($"Group {groupName} doesn't exist")
     {
     }
 }
