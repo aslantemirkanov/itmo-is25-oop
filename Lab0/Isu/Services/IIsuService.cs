@@ -8,10 +8,10 @@ public interface IIsuService
     Group AddGroup(GroupName name);
     Student AddStudent(Group group, string name);
 
-    Student GetStudent(int id);
-    Student? FindStudent(int id);
-    List<Student> FindStudents(GroupName groupName);
-    List<Student> FindStudents(CourseNumber courseNumber);
+    Student GetStudent(StudentId id);
+    Student? FindStudent(StudentId id);
+    IReadOnlyList<Student> FindStudents(GroupName groupName);
+    IReadOnlyList<Student> FindStudents(CourseNumber courseNumber);
 
     Group? FindGroup(GroupName groupName);
     List<Group> FindGroups(CourseNumber courseNumber);
