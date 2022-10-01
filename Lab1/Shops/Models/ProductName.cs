@@ -2,6 +2,10 @@
 
 public record ProductName
 {
+    public ProductName(string productName)
+    {
+        Name = productName;
+    }
+
     public string Name { get; }
-    public ProductName(string productName) => Name = productName;
 }

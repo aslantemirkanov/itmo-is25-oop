@@ -1,15 +1,15 @@
-﻿namespace Shops.Entities;
+﻿using Shops.Exceptions;
+
+namespace Shops.Entities;
 
 using Shops.Models;
 
 public class Product
 {
-    public Product(ProductName productName, int productPrice)
+    public Product(ProductName productName)
     {
         ProductName = productName;
-        ProductPrice = productPrice;
     }
 
     public ProductName ProductName { get; }
-    public int ProductPrice { get; set; }
 }
