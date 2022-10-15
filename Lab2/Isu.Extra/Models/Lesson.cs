@@ -2,7 +2,7 @@
 
 namespace Isu.Extra.Models;
 
-public class Lesson
+public record Lesson
 {
     public Lesson(Teacher teacher, Room room, int day, int classNumber)
     {
