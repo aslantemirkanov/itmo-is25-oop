@@ -48,7 +48,7 @@ public class BackupTask : IBackupTask
         var restorePoint = new RestorePoint(storage, backupObjectsCopy, DateTime.Now);
         _backups.AddRestorePoint(restorePoint);
         _archiveCounter++;
-    }
+        }
 
     public int GetStorageCount()
     {
