@@ -13,7 +13,7 @@ public class BackupsTests
 {
     [Fact]
     public void SplitStorageAlgorithmTest()
-    {/*
+    {
         var fs = new MemoryFileSystem();
         fs.CreateDirectory(@"\from");
         fs.CreateDirectory(@"\to");
@@ -30,7 +30,7 @@ public class BackupsTests
         backupTask.AddBackupObject(obj1);
         backupTask.AddBackupObject(obj2);
         backupTask.RunStorageAlgorithm(algo, archiver);
-        backupTask.RemoveBackupObject(obj2);
+        /*backupTask.RemoveBackupObject(obj2);
         backupTask.RunStorageAlgorithm(algo, archiver);
         int storageCount = 3;
         int restorePointCount = 2;
