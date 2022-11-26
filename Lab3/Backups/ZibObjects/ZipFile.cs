@@ -14,7 +14,8 @@ public class ZipFile : IZipObject
 
     public string GetName()
     {
-        return System.IO.Path.GetFileName(Path);
+        string[] parts = Path.Split('\\');
+        return parts.Last();
     }
 
     public IRepositoryObject GetRepositoryObject(ZipArchiveEntry zipArchiveEntry)

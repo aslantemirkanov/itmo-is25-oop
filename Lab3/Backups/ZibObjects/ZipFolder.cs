@@ -31,7 +31,8 @@ public class ZipFolder : IZipObject
 
     public string GetName()
     {
-        return System.IO.Path.GetFileName(Path);
+        string[] parts = Path.Split('\\');
+        return parts.Last();
     }
 
     private IReadOnlyList<IRepositoryObject> GetListRepositoryObjects(IReadOnlyList<ZipArchiveEntry> zipArchiveEntries)
