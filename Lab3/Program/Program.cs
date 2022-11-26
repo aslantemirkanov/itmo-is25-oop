@@ -10,7 +10,6 @@ public static class Program
 {
     public static void Main(string[] args)
     {
-        
         var from = new FileSystemRepository(@"C:\Users\Aslan\Desktop\ITMO\rp\from");
         var to1 = new FileSystemRepository(@"C:\Users\Aslan\Desktop\ITMO\rp\to\Single");
         var to2 = new FileSystemRepository(@"C:\Users\Aslan\Desktop\ITMO\rp\to\Split");
