@@ -1,4 +1,5 @@
 ﻿using Banks.Entities.Notification;
+using Banks.Entities.Transaction;
 using Banks.Exceptions;
 
 namespace Banks.Entities.BackAccount;
@@ -14,6 +15,7 @@ public class DebitAccount : IBankAccount
     private AccountType _accountType;
     private Bank _bank;
     private double _interestBank;
+    private List<TransactionLog> _transactions;
 
     public DebitAccount(
         Bank bank,
@@ -32,6 +34,7 @@ public class DebitAccount : IBankAccount
         _limit = limit;
         _accountType = accountType;
         _interestBank = 0;
+        _transactions = new List<TransactionLog>();
     }
 
     public void FillUpMoney(double moneyAmount)
@@ -100,13 +103,23 @@ public class DebitAccount : IBankAccount
 
     public void AddDailyInterest()
     {
-        _interestBank += _balance * (_interestRate / 365);
+        _interestBank += _balance * ((_interestRate / 100) / 365);
     }
 
     public void AddMonthInterest()
     {
         _balance += _interestBank;
         _interestBank = 0;
+    }
+
+    public void AddTransactionLog(TransactionLog transactionLog)
+    {
+        _transactions.Add(transactionLog);
+    }
+
+    public void RemoveTransactionLog(TransactionLog transactionLog)
+    {
+        _transactions.Remove(transactionLog);
     }
 
     public AccountType GetAccountType()

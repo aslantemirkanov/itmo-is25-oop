@@ -36,19 +36,23 @@ public class Transacation
         {
             case TransactionType.Replenishment:
                 _replenishment.TransactionExecute(accountFrom, money);
-                _transactions.Add(new TransactionLog(
+                var transactionLog1 = new TransactionLog(
                     accountFrom,
                     accountFrom,
                     money,
-                    TransactionType.Replenishment));
+                    TransactionType.Replenishment);
+                _transactions.Add(transactionLog1);
+                accountFrom.AddTransactionLog(transactionLog1);
                 break;
             case TransactionType.Withdrawal:
                 _withdrawal.TransactionExecute(accountFrom, money);
-                _transactions.Add(new TransactionLog(
+                var transactionLog2 = new TransactionLog(
                     accountFrom,
                     accountFrom,
                     money,
-                    TransactionType.Replenishment));
+                    TransactionType.Withdrawal);
+                _transactions.Add(transactionLog2);
+                accountFrom.AddTransactionLog(transactionLog2);
                 break;
             case TransactionType.Transfer:
                 if (accountTo == null)
@@ -57,11 +61,14 @@ public class Transacation
                 }
 
                 _transfer.TransactionExecute(accountFrom, accountTo, money);
-                _transactions.Add(new TransactionLog(
+                var transactionLog3 = new TransactionLog(
                     accountFrom,
                     accountTo,
                     money,
-                    TransactionType.Replenishment));
+                    TransactionType.Transfer);
+                _transactions.Add(transactionLog3);
+                accountFrom.AddTransactionLog(transactionLog3);
+                accountTo.AddTransactionLog(transactionLog3);
                 break;
             default:
                 throw BankException.NonExistTransaction();
@@ -77,19 +84,46 @@ public class Transacation
                 case TransactionType.Replenishment:
                     log.AccountFrom.TakeOffMoney(log.TransferAmount);
                     _transactions.Remove(log);
+                    log.AccountFrom.RemoveTransactionLog(log);
                     break;
                 case TransactionType.Withdrawal:
                     log.AccountFrom.FillUpMoney(log.TransferAmount);
                     _transactions.Remove(log);
+                    log.AccountFrom.RemoveTransactionLog(log);
                     break;
                 case TransactionType.Transfer:
                     log.AccountTo.TakeOffMoney(log.TransferAmount);
                     log.AccountFrom.FillUpMoney(log.TransferAmount);
                     _transactions.Remove(log);
+                    log.AccountFrom.RemoveTransactionLog(log);
+                    log.AccountTo.RemoveTransactionLog(log);
                     break;
                 default:
                     throw BankException.NonExistTransaction();
             }
+        }
+    }
+
+    public void UndoLastTransaction()
+    {
+        var log = _transactions.Last();
+        switch (log.TransactionType)
+        {
+            case TransactionType.Replenishment:
+                log.AccountFrom.TakeOffMoney(log.TransferAmount);
+                _transactions.Remove(log);
+                break;
+            case TransactionType.Withdrawal:
+                log.AccountFrom.FillUpMoney(log.TransferAmount);
+                _transactions.Remove(log);
+                break;
+            case TransactionType.Transfer:
+                log.AccountTo.TakeOffMoney(log.TransferAmount);
+                log.AccountFrom.FillUpMoney(log.TransferAmount);
+                _transactions.Remove(log);
+                break;
+            default:
+                throw BankException.NonExistTransaction();
         }
     }
 }

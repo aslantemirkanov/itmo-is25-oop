@@ -1,4 +1,5 @@
 ﻿using Banks.Entities.Notification;
+using Banks.Entities.Transaction;
 using Banks.Exceptions;
 
 namespace Banks.Entities.BackAccount;
@@ -14,6 +15,7 @@ public class CreditAccount : IBankAccount
     private Client _client;
     private AccountType _accountType;
     private Bank _bank;
+    private List<TransactionLog> _transactions;
 
     public CreditAccount(
         Bank bank,
@@ -32,6 +34,7 @@ public class CreditAccount : IBankAccount
         _closingDate = DateTime.Now.AddMonths(3);
         _accountType = accountType;
         _lendMoney = 0;
+        _transactions = new List<TransactionLog>();
     }
 
     public void FillUpMoney(double moneyAmount)
@@ -106,6 +109,16 @@ public class CreditAccount : IBankAccount
     public double GetBalance()
     {
         return _balance;
+    }
+
+    public void AddTransactionLog(TransactionLog transactionLog)
+    {
+        _transactions.Add(transactionLog);
+    }
+
+    public void RemoveTransactionLog(TransactionLog transactionLog)
+    {
+        _transactions.Remove(transactionLog);
     }
 
     public AccountType GetAccountType()

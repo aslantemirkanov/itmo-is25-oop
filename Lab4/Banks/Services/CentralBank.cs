@@ -9,10 +9,12 @@ public class CentralBank
 {
     private static CentralBank? _instance;
     private List<Bank> _banks;
+    private DateTime _dateTime;
 
     private CentralBank()
     {
         _banks = new List<Bank>();
+        _dateTime = DateTime.Now;
     }
 
     public static CentralBank GetInstance()
@@ -47,9 +49,25 @@ public class CentralBank
         return bank;
     }
 
-    public void AddInterest()
+    public void RegisterBank(Bank bank)
     {
-        _banks.ForEach(u => u.AddInterest());
+        _banks.Add(bank);
+    }
+
+    public void AddMonthInterest()
+    {
+        _banks.ForEach(u => u.AddMonthInterest());
+    }
+
+    public void AddDayInterest()
+    {
+        _banks.ForEach(u => u.AddDayInterest());
+        _dateTime = _dateTime.AddDays(1);
+    }
+
+    public DateTime GetCurrentDate()
+    {
+        return _dateTime;
     }
 
     private IBankAccount GetBankAccount(Guid accountId)

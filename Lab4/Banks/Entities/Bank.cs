@@ -45,7 +45,7 @@ public class Bank
     public IBankAccount OpenAccount(Client client, double balance, AccountType accountType)
     {
         double limit = double.PositiveInfinity;
-        if (client.GetVerificationStatus() != 5)
+        if (client.GetVerificationStatus() != 3)
         {
             if (accountType == AccountType.Credit)
             {
@@ -74,8 +74,8 @@ public class Bank
             AccountType.Deposit => new DepositAccount(
                 this,
                 client,
-                balance,
                 GetDepositInterestRate(balance),
+                balance,
                 AccountType.Credit),
             _ => throw BankException.NonExistAccountType()
         };
@@ -92,13 +92,19 @@ public class Bank
         PhoneNumber? phoneNumber = null)
     {
         Client client = new Client.ClientBuilder()
-            .AddName(firstName, secondName)
+            .AddFirstName(firstName)
+            .AddSecondName(secondName)
             .AddPassport(passport ?? new Passport(string.Empty))
             .AddPhoneNumber(phoneNumber ?? new PhoneNumber(string.Empty))
             .Build();
 
         _clients.Add(client, new List<IBankAccount>());
         return client;
+    }
+
+    public void AddClient(Client client)
+    {
+        _clients.Add(client, new List<IBankAccount>());
     }
 
     public void AddClientPassport(Client client, string passport)
@@ -262,15 +268,23 @@ public class Bank
         }
     }
 
-    public void AddInterest()
+    public void AddMonthInterest()
     {
-        foreach (IBankAccount bankAccount in _bankAccounts)
+        foreach (IBankAccount bankAccount in _bankAccounts.Where(bankAccount =>
+                     bankAccount.GetAccountType().Equals(AccountType.Debit) ||
+                     bankAccount.GetAccountType().Equals(AccountType.Deposit)))
         {
-            if (bankAccount.GetAccountType().Equals(AccountType.Debit) ||
-                bankAccount.GetAccountType().Equals(AccountType.Deposit))
-            {
-                bankAccount.ChangeParameter(ChangeType.AddMonthInterest, 0);
-            }
+            bankAccount.ChangeParameter(ChangeType.AddMonthInterest, 0);
+        }
+    }
+
+    public void AddDayInterest()
+    {
+        foreach (IBankAccount bankAccount in _bankAccounts.Where(bankAccount =>
+                     bankAccount.GetAccountType().Equals(AccountType.Debit) ||
+                     bankAccount.GetAccountType().Equals(AccountType.Deposit)))
+        {
+            bankAccount.ChangeParameter(ChangeType.AddDayInterest, 0);
         }
     }
 

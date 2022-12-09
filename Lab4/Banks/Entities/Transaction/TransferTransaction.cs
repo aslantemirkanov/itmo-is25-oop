@@ -4,9 +4,9 @@ namespace Banks.Entities.Transaction;
 
 public class TransferTransaction
 {
-    public void TransactionExecute(IBankAccount accountFromId, IBankAccount accountToId, double moneyAmount)
+    public void TransactionExecute(IBankAccount accountFrom, IBankAccount accountTo, double moneyAmount)
     {
-        accountFromId.TakeOffMoney(moneyAmount);
-        accountToId.FillUpMoney(moneyAmount);
+        accountFrom.TakeOffMoney(moneyAmount);
+        accountTo.FillUpMoney(moneyAmount);
     }
 }

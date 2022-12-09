@@ -97,9 +97,14 @@ public class Client
             _verificationStatus = 0;
         }
 
-        public ClientBuilder AddName(string firstName, string secondName)
+        public ClientBuilder AddFirstName(string firstName)
         {
             _firstName = firstName;
+            return this;
+        }
+
+        public ClientBuilder AddSecondName(string secondName)
+        {
             _secondName = secondName;
             return this;
         }

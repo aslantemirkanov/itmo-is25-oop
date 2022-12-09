@@ -1,5 +1,6 @@
 ﻿using System.Data;
 using Banks.Entities.Notification;
+using Banks.Entities.Transaction;
 using Banks.Exceptions;
 
 namespace Banks.Entities.BackAccount;
@@ -14,6 +15,7 @@ public class DepositAccount : IBankAccount
     private AccountType _accountType;
     private Bank _bank;
     private double _interestBank;
+    private List<TransactionLog> _transactions;
 
     public DepositAccount(Bank bank, Client client, double interestRate, double balance, AccountType accountType)
     {
@@ -25,6 +27,7 @@ public class DepositAccount : IBankAccount
         _closingDate = DateTime.Now.AddMonths(3);
         _accountId = Guid.NewGuid();
         _interestBank = 0;
+        _transactions = new List<TransactionLog>();
     }
 
     public void FillUpMoney(double moneyAmount)
@@ -54,7 +57,7 @@ public class DepositAccount : IBankAccount
 
     public void AddDailyInterest()
     {
-        _interestBank += _balance * (_interestRate / 365);
+        _interestBank += _balance * ((_interestRate / 100) / 365);
     }
 
     public void AddMonthInterest()
@@ -89,6 +92,16 @@ public class DepositAccount : IBankAccount
     public double GetBalance()
     {
         return _balance;
+    }
+
+    public void AddTransactionLog(TransactionLog transactionLog)
+    {
+        _transactions.Add(transactionLog);
+    }
+
+    public void RemoveTransactionLog(TransactionLog transactionLog)
+    {
+        _transactions.Remove(transactionLog);
     }
 
     public AccountType GetAccountType()
