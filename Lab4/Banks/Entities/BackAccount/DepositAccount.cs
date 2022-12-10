@@ -39,12 +39,12 @@ public class DepositAccount : IBankAccount
     {
         if (DateTime.Now < _closingDate)
         {
-            throw BankException.WithdrawingFromDepositAccount();
+            throw new WithdrawingFromDepositAccountException();
         }
 
         if (_balance < moneyAmount)
         {
-            throw BankException.NegativeBalance();
+            throw new NegativeBalanceException();
         }
 
         _balance -= moneyAmount;
@@ -85,7 +85,7 @@ public class DepositAccount : IBankAccount
                 AddDailyInterest();
                 break;
             default:
-                throw BankException.NonExistChangeType();
+                throw new NonExistChangeTypeException();
         }
     }
 
@@ -107,5 +107,10 @@ public class DepositAccount : IBankAccount
     public AccountType GetAccountType()
     {
         return _accountType;
+    }
+
+    public List<TransactionLog> GetTransactions()
+    {
+        return _transactions;
     }
 }

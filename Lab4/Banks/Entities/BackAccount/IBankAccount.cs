@@ -14,4 +14,6 @@ public interface IBankAccount
 
     void RemoveTransactionLog(TransactionLog transactionLog);
     void AddTransactionLog(TransactionLog transactionLog);
+
+    List<TransactionLog> GetTransactions();
 }

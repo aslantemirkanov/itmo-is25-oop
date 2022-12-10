@@ -70,6 +70,11 @@ public class CentralBank
         return _dateTime;
     }
 
+    public IReadOnlyList<Bank> GetBanksList()
+    {
+        return _banks;
+    }
+
     private IBankAccount GetBankAccount(Guid accountId)
     {
         IBankAccount? newBankAccount = null;
@@ -83,6 +88,6 @@ public class CentralBank
             }
         }
 
-        throw BankException.WrongAccountId(accountId);
+        throw new WrongAccountIdException(accountId);
     }
 }

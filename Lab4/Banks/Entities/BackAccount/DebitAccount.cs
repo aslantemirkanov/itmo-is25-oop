@@ -48,13 +48,13 @@ public class DebitAccount : IBankAccount
         {
             if (moneyAmount > _limit)
             {
-                throw BankException.ExtraWithdrawalLimit(_limit);
+                throw new ExtraWithdrawalLimitException(_limit);
             }
         }
 
         if (_balance < moneyAmount)
         {
-            throw BankException.NegativeBalance();
+            throw new NegativeBalanceException();
         }
 
         _balance -= moneyAmount;
@@ -92,7 +92,7 @@ public class DebitAccount : IBankAccount
                 AddDailyInterest();
                 break;
             default:
-                throw BankException.NonExistChangeType();
+                throw new NonExistChangeTypeException();
         }
     }
 
@@ -125,5 +125,10 @@ public class DebitAccount : IBankAccount
     public AccountType GetAccountType()
     {
         return _accountType;
+    }
+
+    public List<TransactionLog> GetTransactions()
+    {
+        return _transactions;
     }
 }

@@ -49,10 +49,15 @@ public class Bank
         {
             if (accountType == AccountType.Credit)
             {
-                throw BankException.TryToCreateVerificatedAccount();
+                throw new TryToCreateVerificatedAccountException();
             }
 
             limit = _suspiciousAccountLimit;
+        }
+
+        if (balance < 0)
+        {
+            throw new NegativeBalanceException();
         }
 
         IBankAccount bankAccount = accountType switch
@@ -77,11 +82,12 @@ public class Bank
                 GetDepositInterestRate(balance),
                 balance,
                 AccountType.Credit),
-            _ => throw BankException.NonExistAccountType()
+            _ => throw new NonExistAccountTypeException()
         };
 
         _clients[client].Add(bankAccount);
         _bankAccounts.Add(bankAccount);
+        client.GetNotification($"You opened {accountType} account");
         return bankAccount;
     }
 
@@ -137,7 +143,7 @@ public class Bank
     {
         if (client.GetPhoneNumber() == null)
         {
-            throw ClientException.TryToGetNullPhoneNumber(client);
+            throw new TryToGetNullPhoneNumberException(client);
         }
 
         if (!_subscribers.ContainsKey(client))
@@ -237,7 +243,7 @@ public class Bank
         IBankAccount? newBankAccount = GetBankAccount(accountId);
         if (newBankAccount == null)
         {
-            throw BankException.WrongAccountId(accountId);
+            throw new WrongAccountIdException(accountId);
         }
 
         Transacation.GetInstance().ExecuteTransaction(TransactionType.Replenishment, money, newBankAccount);
@@ -248,7 +254,7 @@ public class Bank
         IBankAccount? newBankAccount = GetBankAccount(accountId);
         if (newBankAccount == null)
         {
-            throw BankException.WrongAccountId(accountId);
+            throw new WrongAccountIdException(accountId);
         }
 
         Transacation.GetInstance().ExecuteTransaction(TransactionType.Withdrawal, money, newBankAccount);
@@ -288,6 +294,31 @@ public class Bank
         }
     }
 
+    public Guid GetBankId()
+    {
+        return _bankId;
+    }
+
+    public Client? GetClient(string id)
+    {
+        return _clients.Keys.FirstOrDefault(client => client.GetId().ToString() == id);
+    }
+
+    public IReadOnlyList<Client> GetBankAllClients()
+    {
+        return _clients.Keys.ToList();
+    }
+
+    public IReadOnlyList<IBankAccount> GetClientAccounts(Client client)
+    {
+        return _clients[client];
+    }
+
+    public string GetName()
+    {
+        return _bankName;
+    }
+
     private double GetDepositInterestRate(double balance)
     {
         foreach (double thresholdBalance in _depositInterestRates.Keys.Where(thresholdBalance =>
@@ -296,7 +327,7 @@ public class Bank
             return _depositInterestRates[thresholdBalance];
         }
 
-        throw BankException.WrongDepositBalance(balance);
+        throw new WrongDepositBalanceException(balance);
     }
 
     public class BankBuilder

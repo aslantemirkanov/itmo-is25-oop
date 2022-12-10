@@ -9,7 +9,7 @@ public class Passport
     {
         if (passportSeries.Length != 10 || !long.TryParse(passportSeries, out long _))
         {
-            throw ClientException.WrongPassportSeriesException(passportSeries);
+            throw new WrongPassportSeriesException(passportSeries);
         }
 
         _passportSeries = passportSeries;

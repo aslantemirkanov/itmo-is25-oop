@@ -68,7 +68,7 @@ public class CreditAccount : IBankAccount
         {
             if (Math.Abs(_balance - moneyAmount) + _lendMoney + _interestRate > _creditLimit)
             {
-                throw BankException.CreditLimitExcess();
+                throw new CreditLimitExcessException();
             }
 
             _lendMoney += Math.Abs(_balance - moneyAmount) + _interestRate;
@@ -102,7 +102,7 @@ public class CreditAccount : IBankAccount
                 ChangeCreditLimit(newParameter);
                 break;
             default:
-                throw BankException.NonExistChangeType();
+                throw new NonExistChangeTypeException();
         }
     }
 
@@ -114,6 +114,11 @@ public class CreditAccount : IBankAccount
     public void AddTransactionLog(TransactionLog transactionLog)
     {
         _transactions.Add(transactionLog);
+    }
+
+    public List<TransactionLog> GetTransactions()
+    {
+        return _transactions;
     }
 
     public void RemoveTransactionLog(TransactionLog transactionLog)

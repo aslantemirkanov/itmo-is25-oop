@@ -71,36 +71,59 @@ public class Transacation
                 accountTo.AddTransactionLog(transactionLog3);
                 break;
             default:
-                throw BankException.NonExistTransaction();
+                throw new NonExistTransactionException();
         }
     }
 
     public void Undo(Guid transactionId)
     {
-        foreach (TransactionLog log in _transactions.Where(log => log.TransactionId.Equals(transactionId)))
+        TransactionLog? transactionLog = null;
+        foreach (var log in _transactions.Where(log => log.TransactionId.Equals(transactionId)))
         {
             switch (log.TransactionType)
             {
                 case TransactionType.Replenishment:
                     log.AccountFrom.TakeOffMoney(log.TransferAmount);
-                    _transactions.Remove(log);
-                    log.AccountFrom.RemoveTransactionLog(log);
+                    transactionLog = log;
                     break;
                 case TransactionType.Withdrawal:
                     log.AccountFrom.FillUpMoney(log.TransferAmount);
-                    _transactions.Remove(log);
-                    log.AccountFrom.RemoveTransactionLog(log);
+                    transactionLog = log;
                     break;
                 case TransactionType.Transfer:
                     log.AccountTo.TakeOffMoney(log.TransferAmount);
                     log.AccountFrom.FillUpMoney(log.TransferAmount);
-                    _transactions.Remove(log);
-                    log.AccountFrom.RemoveTransactionLog(log);
-                    log.AccountTo.RemoveTransactionLog(log);
+                    transactionLog = log;
                     break;
                 default:
-                    throw BankException.NonExistTransaction();
+                    throw new NonExistTransactionException();
             }
+        }
+
+        if (transactionLog != null)
+        {
+            if (transactionLog.TransactionType == TransactionType.Replenishment)
+            {
+                transactionLog.AccountFrom.RemoveTransactionLog(transactionLog);
+                _transactions.Remove(transactionLog);
+            }
+
+            if (transactionLog.TransactionType == TransactionType.Withdrawal)
+            {
+                transactionLog.AccountFrom.RemoveTransactionLog(transactionLog);
+                _transactions.Remove(transactionLog);
+            }
+
+            if (transactionLog.TransactionType == TransactionType.Transfer)
+            {
+                transactionLog.AccountFrom.RemoveTransactionLog(transactionLog);
+                transactionLog.AccountTo.RemoveTransactionLog(transactionLog);
+                _transactions.Remove(transactionLog);
+            }
+        }
+        else
+        {
+            throw new NonExistTransactionException();
         }
     }
 
@@ -123,7 +146,7 @@ public class Transacation
                 _transactions.Remove(log);
                 break;
             default:
-                throw BankException.NonExistTransaction();
+                throw new NonExistTransactionException();
         }
     }
 }

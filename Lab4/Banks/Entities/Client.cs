@@ -37,7 +37,7 @@ public class Client
     {
         if (passportSeries == string.Empty)
         {
-            throw ClientException.WrongPassportSeriesException(passportSeries);
+            throw new WrongPassportSeriesException(passportSeries);
         }
 
         _passport = new Passport(passportSeries);
@@ -48,7 +48,7 @@ public class Client
     {
         if (phoneNumber == string.Empty)
         {
-            throw ClientException.WrongPhoneNumberException(phoneNumber);
+            throw new WrongPhoneNumberException(phoneNumber);
         }
 
         _phoneNumber = new PhoneNumber(phoneNumber);
@@ -78,6 +78,16 @@ public class Client
     public string GetName()
     {
         return _firstName + " " + _secondName;
+    }
+
+    public Guid GetId()
+    {
+        return _clientId;
+    }
+
+    public List<string> ShowNotifications()
+    {
+        return _notifications;
     }
 
     public class ClientBuilder

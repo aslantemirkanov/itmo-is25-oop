@@ -10,7 +10,7 @@ public class PhoneNumber
     {
         if (!PhoneNumberValidation(phoneNumber))
         {
-            throw ClientException.WrongPhoneNumberException(phoneNumber);
+            throw new WrongPhoneNumberException(phoneNumber);
         }
 
         _phoneNumber = phoneNumber;
